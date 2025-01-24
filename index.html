@@ -9,30 +9,89 @@
       font-family: Arial, sans-serif;
       margin: 20px;
     }
-    label, input, select {
-      display: block;
-      margin-bottom: 10px;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #f4f4f4;
     }
     .result {
-      margin-top: 20px;
       font-weight: bold;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
   <h1>Quantum Algorithms Grade Calculator</h1>
   <form id="gradeForm">
-    <label for="unitsPassed">Units Passed (0-5):</label>
-    <input type="number" id="unitsPassed" min="0" max="5" required>
-
-    <label for="finalExamScore">Final Exam Score (0-100):</label>
-    <input type="number" id="finalExamScore" min="0" max="100" required>
-
-    <label for="isGraduate">Graduate or Undergraduate:</label>
-    <select id="isGraduate">
-      <option value="false">Undergraduate</option>
-      <option value="true">Graduate</option>
-    </select>
+    <table>
+      <thead>
+        <tr>
+          <th>Unit</th>
+          <th>In-Class Performance (P/F)</th>
+          <th>Final Exam Score (0-20)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Unit 1</td>
+          <td>
+            <select id="unit1Class">
+              <option value="P">P</option>
+              <option value="F">F</option>
+            </select>
+          </td>
+          <td><input type="number" id="unit1Final" min="0" max="20"></td>
+        </tr>
+        <tr>
+          <td>Unit 2</td>
+          <td>
+            <select id="unit2Class">
+              <option value="P">P</option>
+              <option value="F">F</option>
+            </select>
+          </td>
+          <td><input type="number" id="unit2Final" min="0" max="20"></td>
+        </tr>
+        <tr>
+          <td>Unit 3</td>
+          <td>
+            <select id="unit3Class">
+              <option value="P">P</option>
+              <option value="F">F</option>
+            </select>
+          </td>
+          <td><input type="number" id="unit3Final" min="0" max="20"></td>
+        </tr>
+        <tr>
+          <td>Unit 4</td>
+          <td>
+            <select id="unit4Class">
+              <option value="P">P</option>
+              <option value="F">F</option>
+            </select>
+          </td>
+          <td><input type="number" id="unit4Final" min="0" max="20"></td>
+        </tr>
+        <tr>
+          <td>Unit 5</td>
+          <td>
+            <select id="unit5Class">
+              <option value="P">P</option>
+              <option value="F">F</option>
+            </select>
+          </td>
+          <td><input type="number" id="unit5Final" min="0" max="20"></td>
+        </tr>
+      </tbody>
+    </table>
 
     <button type="button" onclick="calculateGrade()">Calculate Grade</button>
   </form>
@@ -41,30 +100,22 @@
 
   <script>
     function calculateGrade() {
-      const unitsPassed = parseInt(document.getElementById('unitsPassed').value, 10);
-      const finalExamScore = parseFloat(document.getElementById('finalExamScore').value);
-      const isGraduate = document.getElementById('isGraduate').value === 'graduate';
+      // Retrieve class performance and final scores
+      const unitsClass = [
+        document.getElementById('unit1Class').value,
+        document.getElementById('unit2Class').value,
+        document.getElementById('unit3Class').value,
+        document.getElementById('unit4Class').value,
+        document.getElementById('unit5Class').value,
+      ];
 
-      let grade = "F";
+      const unitsFinal = [
+        parseFloat(document.getElementById('unit1Final').value) || 0,
+        parseFloat(document.getElementById('unit2Final').value) || 0,
+        parseFloat(document.getElementById('unit3Final').value) || 0,
+        parseFloat(document.getElementById('unit4Final').value) || 0,
+        parseFloat(document.getElementById('unit5Final').value) || 0,
+      ];
 
-      if (isGraduate) {
-        // Graduate grading logic
-        if (unitsPassed >= 3 && finalExamScore >= 80) grade = "B";
-        else if (unitsPassed >= 3) grade = "C";
-      } else {
-        // Undergraduate grading logic
-        if (unitsPassed === 5 && finalExamScore >= 95) grade = "A+";
-        else if (unitsPassed === 5 && finalExamScore >= 90) grade = "A";
-        else if (unitsPassed === 5) grade = "A-";
-        else if (unitsPassed === 4 && finalExamScore >= 70) grade = "B+";
-        else if (unitsPassed === 4) grade = "B";
-        else if (unitsPassed === 3 && finalExamScore >= 60) grade = "B-";
-        else if (unitsPassed === 3) grade = "C";
-        else if (unitsPassed <= 2) grade = "F";
-      }
-
-      document.getElementById('result').textContent = `Your final grade is: ${grade}`;
-    }
-  </script>
-</body>
-</html>
+      // Calculate total units passed during class and raw final exam score
+      const unitsPassed = unitsClass.filter(stat
