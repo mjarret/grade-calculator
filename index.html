@@ -35,10 +35,20 @@
       border: none;
       border-radius: 5px;
     }
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
   <h1>Quantum Algorithms Grade Calculator</h1>
+
+  <label for="studentType">Student Type:</label>
+  <select id="studentType" onchange="updateResults()">
+    <option value="undergrad">Undergraduate</option>
+    <option value="graduate">Graduate</option>
+  </select>
+
   <table>
     <thead>
       <tr>
@@ -52,73 +62,75 @@
       <tr>
         <td>Unit 1</td>
         <td>
-          <select id="unit1Class">
+          <select id="unit1Class" onchange="updateResults()">
             <option value="P">P</option>
             <option value="F">F</option>
           </select>
         </td>
-        <td><input type="number" id="unit1Final" min="0" max="20"></td>
+        <td><input type="number" id="unit1Final" min="0" max="20" oninput="updateResults()"></td>
         <td id="unit1Result">-</td>
       </tr>
       <tr>
         <td>Unit 2</td>
         <td>
-          <select id="unit2Class">
+          <select id="unit2Class" onchange="updateResults()">
             <option value="P">P</option>
             <option value="F">F</option>
           </select>
         </td>
-        <td><input type="number" id="unit2Final" min="0" max="20"></td>
+        <td><input type="number" id="unit2Final" min="0" max="20" oninput="updateResults()"></td>
         <td id="unit2Result">-</td>
       </tr>
       <tr>
         <td>Unit 3</td>
         <td>
-          <select id="unit3Class">
+          <select id="unit3Class" onchange="updateResults()">
             <option value="P">P</option>
             <option value="F">F</option>
           </select>
         </td>
-        <td><input type="number" id="unit3Final" min="0" max="20"></td>
+        <td><input type="number" id="unit3Final" min="0" max="20" oninput="updateResults()"></td>
         <td id="unit3Result">-</td>
       </tr>
       <tr>
         <td>Unit 4</td>
         <td>
-          <select id="unit4Class">
+          <select id="unit4Class" onchange="updateResults()">
             <option value="P">P</option>
             <option value="F">F</option>
           </select>
         </td>
-        <td><input type="number" id="unit4Final" min="0" max="20"></td>
+        <td><input type="number" id="unit4Final" min="0" max="20" oninput="updateResults()"></td>
         <td id="unit4Result">-</td>
       </tr>
       <tr>
         <td>Unit 5</td>
         <td>
-          <select id="unit5Class">
+          <select id="unit5Class" onchange="updateResults()">
             <option value="P">P</option>
             <option value="F">F</option>
           </select>
         </td>
-        <td><input type="number" id="unit5Final" min="0" max="20"></td>
+        <td><input type="number" id="unit5Final" min="0" max="20" oninput="updateResults()"></td>
         <td id="unit5Result">-</td>
       </tr>
     </tbody>
     <tfoot>
       <tr>
-        <td colspan="3" style="font-weight: bold;">Final Exam Grade:</td>
-        <td id="finalExamGrade">-</td>
+        <td colspan="3" id="finalExamLabel" style="font-weight: bold;">Final Exam Grade:</td>
+        <td>
+          <span id="finalExamGrade">-</span>
+          <input type="number" id="projectGrade" min="0" max="100" class="hidden" oninput="updateResults()">
+        </td>
       </tr>
     </tfoot>
   </table>
 
-  <button class="btn" onclick="calculateGrade()">Calculate Grade</button>
-  <div id="result" class="result"></div>
-
   <script>
-    function calculateGrade() {
-      // Get data from each row
+    function updateResults() {
+      const studentType = document.getElementById('studentType').value;
+      const isGraduate = studentType === 'graduate';
+
       const unitsClass = [
         document.getElementById('unit1Class').value,
         document.getElementById('unit2Class').value,
@@ -135,7 +147,6 @@
         parseFloat(document.getElementById('unit5Final').value) || 0,
       ];
 
-      // Calculate total units passed
       let totalUnitsPassed = 0;
       unitsClass.forEach((performance, index) => {
         const finalScore = unitsFinal[index];
@@ -148,13 +159,24 @@
         }
       });
 
-      // Calculate final exam grade
-      const finalExamGrade = unitsFinal.reduce((sum, score) => sum + score, 0);
-      document.getElementById('finalExamGrade').textContent = finalExamGrade;
+      const finalExamGradeCell = document.getElementById('finalExamGrade');
+      const projectGradeInput = document.getElementById('projectGrade');
+      const finalExamLabel = document.getElementById('finalExamLabel');
 
-      // Display result summary
-      document.getElementById('result').textContent = `Total Units Passed: ${totalUnitsPassed}, Final Exam Grade: ${finalExamGrade}`;
+      if (isGraduate) {
+        finalExamLabel.textContent = 'Project Grade:';
+        finalExamGradeCell.classList.add('hidden');
+        projectGradeInput.classList.remove('hidden');
+      } else {
+        finalExamLabel.textContent = 'Final Exam Grade:';
+        finalExamGradeCell.classList.remove('hidden');
+        projectGradeInput.classList.add('hidden');
+        const finalExamGrade = unitsFinal.reduce((sum, score) => sum + score, 0);
+        finalExamGradeCell.textContent = finalExamGrade;
+      }
     }
+
+    document.addEventListener('DOMContentLoaded', updateResults);
   </script>
 </body>
 </html>
