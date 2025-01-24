@@ -1,66 +1,187 @@
-function calculateFinalGrade() {
-  const studentType = document.getElementById('studentType').value;
-  const isGraduate = studentType === 'graduate';
-
-  const unitsClass = [
-    document.getElementById('unit1Class').value,
-    document.getElementById('unit2Class').value,
-    document.getElementById('unit3Class').value,
-    document.getElementById('unit4Class').value,
-    document.getElementById('unit5Class').value,
-  ];
-
-  const unitsFinal = [
-    parseFloat(document.getElementById('unit1Final').value) || 0,
-    parseFloat(document.getElementById('unit2Final').value) || 0,
-    parseFloat(document.getElementById('unit3Final').value) || 0,
-    parseFloat(document.getElementById('unit4Final').value) || 0,
-    parseFloat(document.getElementById('unit5Final').value) || 0,
-  ];
-
-  // Calculate total units passed
-  let totalUnitsPassed = 0;
-  unitsClass.forEach((performance, index) => {
-    if (performance === 'P' && unitsFinal[index] >= 16) {
-      totalUnitsPassed++;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grade Calculator</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
     }
-  });
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+    .result {
+      font-weight: bold;
+      margin-top: 20px;
+    }
+    .hidden {
+      display: none;
+    }
+    .divider {
+      border-top: 2px solid #000;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- Page Title -->
+  <h1>Quantum Algorithms Grade Calculator</h1>
 
-  // Get the final exam or project grade
-  const projectGradeInput = parseFloat(document.getElementById('projectGrade').value) || 0;
-  const finalExamGrade = unitsFinal.reduce((sum, score) => sum + score, 0);
-  const totalFinalGrade = isGraduate ? projectGradeInput : finalExamGrade;
+  <!-- Student Type Selector -->
+  <label for="studentType">Student Type:</label>
+  <select id="studentType" onchange="calculateFinalGrade()">
+    <option value="undergrad">Undergraduate</option>
+    <option value="graduate">Graduate</option>
+  </select>
 
-  // Determine the course grade based on the syllabus logic
-  let finalGrade = 'F';
-  if (totalUnitsPassed === 5 && totalFinalGrade >= 95) {
-    finalGrade = 'A+';
-  } else if (totalUnitsPassed === 5 && totalFinalGrade >= 90) {
-    finalGrade = 'A';
-  } else if (totalUnitsPassed === 5) {
-    finalGrade = 'A-';
-  } else if (totalUnitsPassed === 4 && totalFinalGrade >= 70) {
-    finalGrade = 'B+';
-  } else if (totalUnitsPassed === 4) {
-    finalGrade = 'B';
-  } else if (totalUnitsPassed === 3 && totalFinalGrade >= 60) {
-    finalGrade = 'B-';
-  } else if (totalUnitsPassed === 3) {
-    finalGrade = 'C';
-  }
+  <!-- Grade Calculation Table -->
+  <table>
+    <thead>
+      <tr>
+        <th>Unit</th>
+        <th>In-Class Performance (P/I)</th>
+        <th>Final Exam Score (0-20)</th>
+        <th>Final Unit Grade</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Table Rows for Units -->
+      ${[1, 2, 3, 4, 5]
+        .map(
+          (i) => `
+      <tr>
+        <td>Unit ${i}</td>
+        <td>
+          <select id="unit${i}Class" onchange="calculateFinalGrade()">
+            <option value="P">P</option>
+            <option value="I">I</option>
+          </select>
+        </td>
+        <td>
+          <input type="number" id="unit${i}Final" min="0" max="20" oninput="calculateFinalGrade()">
+        </td>
+        <td id="unit${i}Result">-</td>
+      </tr>`
+        )
+        .join("")}
+    </tbody>
+    <tfoot>
+      <!-- Final Exam or Project Grade -->
+      <tr>
+        <td colspan="3" id="finalExamLabel" style="font-weight: bold;">Final Exam Grade:</td>
+        <td>
+          <span id="finalExamGrade">-</span>
+          <input type="number" id="projectGrade" min="0" max="100" class="hidden" oninput="calculateFinalGrade()">
+        </td>
+      </tr>
 
-  // Update the calculated values in the table
-  document.getElementById('finalExamGrade').textContent = isGraduate
-    ? projectGradeInput
-    : finalExamGrade;
-  document.getElementById('averageGrade').textContent = finalGrade;
-}
+      <!-- Divider -->
+      <tr>
+        <td colspan="4">
+          <div class="divider"></div>
+        </td>
+      </tr>
 
-// Ensure the function is triggered on input or selection change
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('input, select').forEach(input => {
-    input.addEventListener('input', calculateFinalGrade);
-    input.addEventListener('change', calculateFinalGrade);
-  });
-  calculateFinalGrade(); // Initial calculation
-});
+      <!-- Final Course Grade -->
+      <tr>
+        <td colspan="3" style="font-weight: bold;">Final Course Grade:</td>
+        <td id="finalCourseGrade">-</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <!-- JavaScript -->
+  <script>
+    function calculateFinalGrade() {
+      // Determine Student Type
+      const studentType = document.getElementById("studentType").value;
+      const isGraduate = studentType === "graduate";
+
+      // Fetch Data for Units
+      const unitsClass = Array.from({ length: 5 }, (_, i) =>
+        document.getElementById(`unit${i + 1}Class`).value
+      );
+      const unitsFinal = Array.from({ length: 5 }, (_, i) =>
+        parseFloat(document.getElementById(`unit${i + 1}Final`).value) || 0
+      );
+
+      // Calculate Final Unit Grades
+      let totalUnitsPassed = 0;
+      unitsClass.forEach((performance, index) => {
+        const finalScore = unitsFinal[index];
+        const resultCell = document.getElementById(`unit${index + 1}Result`);
+        if (performance === "P" || finalScore >= 15) {
+          totalUnitsPassed++;
+          resultCell.textContent = "Pass";
+        } else {
+          resultCell.textContent = "Incomplete";
+        }
+      });
+
+      // Calculate Final Exam or Project Grade
+      const finalExamGrade = unitsFinal.reduce((sum, score) => sum + score, 0);
+      const projectGradeInput =
+        parseFloat(document.getElementById("projectGrade").value) || 0;
+      const totalFinalGrade = isGraduate ? projectGradeInput : finalExamGrade;
+
+      // Update Final Exam or Project Label
+      const finalExamLabel = document.getElementById("finalExamLabel");
+      const finalExamGradeCell = document.getElementById("finalExamGrade");
+      const projectGradeCell = document.getElementById("projectGrade");
+
+      if (isGraduate) {
+        finalExamLabel.textContent = "Project Grade:";
+        finalExamGradeCell.classList.add("hidden");
+        projectGradeCell.classList.remove("hidden");
+      } else {
+        finalExamLabel.textContent = "Final Exam Grade:";
+        finalExamGradeCell.classList.remove("hidden");
+        projectGradeCell.classList.add("hidden");
+        finalExamGradeCell.textContent = finalExamGrade;
+      }
+
+      // Calculate Final Course Grade
+      let finalCourseGrade = "F";
+      if (totalUnitsPassed === 5 && totalFinalGrade >= 95) {
+        finalCourseGrade = "A+";
+      } else if (totalUnitsPassed === 5 && totalFinalGrade >= 90) {
+        finalCourseGrade = "A";
+      } else if (totalUnitsPassed === 5) {
+        finalCourseGrade = "A-";
+      } else if (totalUnitsPassed === 4 && totalFinalGrade >= 70) {
+        finalCourseGrade = "B+";
+      } else if (totalUnitsPassed === 4) {
+        finalCourseGrade = "B";
+      } else if (totalUnitsPassed === 3 && totalFinalGrade >= 60) {
+        finalCourseGrade = "B-";
+      } else if (totalUnitsPassed === 3) {
+        finalCourseGrade = "C";
+      }
+
+      // Update Final Course Grade
+      document.getElementById("finalCourseGrade").textContent = finalCourseGrade;
+    }
+
+    // Initialize Event Listeners
+    document.addEventListener("DOMContentLoaded", calculateFinalGrade);
+    document
+      .querySelectorAll("input, select")
+      .forEach((el) =>
+        el.addEventListener("input", calculateFinalGrade)
+      );
+  </script>
+</body>
+</html>
