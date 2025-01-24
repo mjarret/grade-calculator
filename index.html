@@ -48,13 +48,19 @@
       let grade = "F";
 
       if (isGraduate) {
+        // Graduate grading logic
         if (unitsPassed >= 3 && finalExamScore >= 80) grade = "B";
         else if (unitsPassed >= 3) grade = "C";
       } else {
+        // Undergraduate grading logic
         if (unitsPassed === 5 && finalExamScore >= 95) grade = "A+";
         else if (unitsPassed === 5 && finalExamScore >= 90) grade = "A";
+        else if (unitsPassed === 5 && finalExamScore < 90) grade = "A-";
         else if (unitsPassed === 4 && finalExamScore >= 70) grade = "B+";
-        else if (unitsPassed === 3 && finalExamScore >= 60) grade = "B";
+        else if (unitsPassed === 4) grade = "B";
+        else if (unitsPassed === 3 && finalExamScore >= 60) grade = "B-";
+        else if (unitsPassed === 3) grade = "C";
+        else if (unitsPassed <= 2) grade = "F";
       }
 
       document.getElementById('result').textContent = `Your final grade is: ${grade}`;
