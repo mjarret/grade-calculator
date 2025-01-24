@@ -123,6 +123,22 @@
           <input type="number" id="projectGrade" min="0" max="100" class="hidden" oninput="updateResults()">
         </td>
       </tr>
+      <tr>
+        <td colspan="3" id="Final Grade" style="font-weight: bold;">Final Course Grade:</td>
+        <td>
+          <span id="Grade">-</span>
+          <select id="CourseGrade" onchange="updateResults()">
+            <option value="A+">A+</option>
+            <option value="A">A</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B">B</option>
+            <option value="B-">B-</option>
+            <option value="C">C</option>
+            <option value="F">F</option>
+          </select>
+        </td>
+      </tr>
     </tfoot>
   </table>
 
@@ -176,6 +192,31 @@
       }
     }
 
+  // Determine the course grade based on the syllabus logic
+  let finalGrade = 'F';
+  if (totalUnitsPassed === 5 && totalFinalGrade >= 95) {
+    finalGrade = 'A+';
+  } else if (totalUnitsPassed === 5 && totalFinalGrade >= 90) {
+    finalGrade = 'A';
+  } else if (totalUnitsPassed === 5) {
+    finalGrade = 'A-';
+  } else if (totalUnitsPassed === 4 && totalFinalGrade >= 70) {
+    finalGrade = 'B+';
+  } else if (totalUnitsPassed === 4) {
+    finalGrade = 'B';
+  } else if (totalUnitsPassed === 3 && totalFinalGrade >= 60) {
+    finalGrade = 'B-';
+  } else if (totalUnitsPassed === 3) {
+    finalGrade = 'C';
+  }
+
+  // Update the calculated values in the table
+  document.getElementById('finalExamGrade').textContent = isGraduate
+    ? projectGradeInput
+    : finalExamGrade;
+  document.getElementById('CourseGrade').textContent = finalGrade;
+}
+    
     document.addEventListener('DOMContentLoaded', updateResults);
   </script>
 </body>
