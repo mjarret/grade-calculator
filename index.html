@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grade Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    label, input, select {
+      display: block;
+      margin-bottom: 10px;
+    }
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Quantum Algorithms Grade Calculator</h1>
+  <form id="gradeForm">
+    <label for="unitsPassed">Units Passed (0-5):</label>
+    <input type="number" id="unitsPassed" min="0" max="5" required>
+
+    <label for="finalExamScore">Final Exam Score (0-100):</label>
+    <input type="number" id="finalExamScore" min="0" max="100" required>
+
+    <label for="isGraduate">Graduate or Undergraduate:</label>
+    <select id="isGraduate">
+      <option value="undergrad">Undergraduate</option>
+      <option value="graduate">Graduate</option>
+    </select>
+
+    <button type="button" onclick="calculateGrade()">Calculate Grade</button>
+  </form>
+
+  <div id="result" class="result"></div>
+
+  <script>
+    function calculateGrade() {
+      const unitsPassed = parseInt(document.getElementById('unitsPassed').value, 10);
+      const finalExamScore = parseFloat(document.getElementById('finalExamScore').value);
+      const isGraduate = document.getElementById('isGraduate').value === 'graduate';
+
+      let grade = "F";
+
+      if (isGraduate) {
+        if (unitsPassed >= 3 && finalExamScore >= 80) grade = "B";
+        else if (unitsPassed >= 3) grade = "C";
+      } else {
+        if (unitsPassed === 5 && finalExamScore >= 95) grade = "A+";
+        else if (unitsPassed === 5 && finalExamScore >= 90) grade = "A";
+        else if (unitsPassed === 4 && finalExamScore >= 70) grade = "B+";
+        else if (unitsPassed === 3 && finalExamScore >= 60) grade = "B";
+      }
+
+      document.getElementById('result').textContent = `Your final grade is: ${grade}`;
+    }
+  </script>
+</body>
+</html>
