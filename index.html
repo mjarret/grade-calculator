@@ -57,26 +57,8 @@
         <th>Final Unit Grade</th>
       </tr>
     </thead>
-    <tbody>
-      <!-- Table Rows for Units -->
-      ${[1, 2, 3, 4, 5]
-        .map(
-          (i) => `
-      <tr>
-        <td>Unit ${i}</td>
-        <td>
-          <select id="unit${i}Class" onchange="calculateFinalGrade()">
-            <option value="P">P</option>
-            <option value="I">I</option>
-          </select>
-        </td>
-        <td>
-          <input type="number" id="unit${i}Final" min="0" max="20" oninput="calculateFinalGrade()">
-        </td>
-        <td id="unit${i}Result">-</td>
-      </tr>`
-        )
-        .join("")}
+    <tbody id="tableBody">
+      <!-- Table rows will be dynamically generated here -->
     </tbody>
     <tfoot>
       <!-- Final Exam or Project Grade -->
@@ -105,6 +87,32 @@
 
   <!-- JavaScript -->
   <script>
+    function generateTableRows() {
+      const tableBody = document.getElementById("tableBody");
+      const numberOfUnits = 5; // Define the number of units
+      let rows = "";
+
+      for (let i = 1; i <= numberOfUnits; i++) {
+        rows += `
+          <tr>
+            <td>Unit ${i}</td>
+            <td>
+              <select id="unit${i}Class" onchange="calculateFinalGrade()">
+                <option value="P">P</option>
+                <option value="I">I</option>
+              </select>
+            </td>
+            <td>
+              <input type="number" id="unit${i}Final" min="0" max="20" oninput="calculateFinalGrade()">
+            </td>
+            <td id="unit${i}Result">-</td>
+          </tr>
+        `;
+      }
+
+      tableBody.innerHTML = rows;
+    }
+
     function calculateFinalGrade() {
       // Determine Student Type
       const studentType = document.getElementById("studentType").value;
@@ -175,13 +183,11 @@
       document.getElementById("finalCourseGrade").textContent = finalCourseGrade;
     }
 
-    // Initialize Event Listeners
-    document.addEventListener("DOMContentLoaded", calculateFinalGrade);
-    document
-      .querySelectorAll("input, select")
-      .forEach((el) =>
-        el.addEventListener("input", calculateFinalGrade)
-      );
+    // Generate the table rows on page load
+    document.addEventListener("DOMContentLoaded", () => {
+      generateTableRows();
+      calculateFinalGrade();
+    });
   </script>
 </body>
 </html>
