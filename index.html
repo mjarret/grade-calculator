@@ -26,81 +26,99 @@
       font-weight: bold;
       margin-top: 20px;
     }
+    .btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
   </style>
 </head>
 <body>
   <h1>Quantum Algorithms Grade Calculator</h1>
-  <form id="gradeForm">
-    <table>
-      <thead>
-        <tr>
-          <th>Unit</th>
-          <th>In-Class Performance (P/F)</th>
-          <th>Final Exam Score (0-20)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Unit 1</td>
-          <td>
-            <select id="unit1Class">
-              <option value="P">P</option>
-              <option value="F">F</option>
-            </select>
-          </td>
-          <td><input type="number" id="unit1Final" min="0" max="20"></td>
-        </tr>
-        <tr>
-          <td>Unit 2</td>
-          <td>
-            <select id="unit2Class">
-              <option value="P">P</option>
-              <option value="F">F</option>
-            </select>
-          </td>
-          <td><input type="number" id="unit2Final" min="0" max="20"></td>
-        </tr>
-        <tr>
-          <td>Unit 3</td>
-          <td>
-            <select id="unit3Class">
-              <option value="P">P</option>
-              <option value="F">F</option>
-            </select>
-          </td>
-          <td><input type="number" id="unit3Final" min="0" max="20"></td>
-        </tr>
-        <tr>
-          <td>Unit 4</td>
-          <td>
-            <select id="unit4Class">
-              <option value="P">P</option>
-              <option value="F">F</option>
-            </select>
-          </td>
-          <td><input type="number" id="unit4Final" min="0" max="20"></td>
-        </tr>
-        <tr>
-          <td>Unit 5</td>
-          <td>
-            <select id="unit5Class">
-              <option value="P">P</option>
-              <option value="F">F</option>
-            </select>
-          </td>
-          <td><input type="number" id="unit5Final" min="0" max="20"></td>
-        </tr>
-      </tbody>
-    </table>
+  <table>
+    <thead>
+      <tr>
+        <th>Unit</th>
+        <th>In-Class Performance (P/F)</th>
+        <th>Final Exam Score (0-20)</th>
+        <th>Total Units Passed</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Unit 1</td>
+        <td>
+          <select id="unit1Class">
+            <option value="P">P</option>
+            <option value="F">F</option>
+          </select>
+        </td>
+        <td><input type="number" id="unit1Final" min="0" max="20"></td>
+        <td id="unit1Result">-</td>
+      </tr>
+      <tr>
+        <td>Unit 2</td>
+        <td>
+          <select id="unit2Class">
+            <option value="P">P</option>
+            <option value="F">F</option>
+          </select>
+        </td>
+        <td><input type="number" id="unit2Final" min="0" max="20"></td>
+        <td id="unit2Result">-</td>
+      </tr>
+      <tr>
+        <td>Unit 3</td>
+        <td>
+          <select id="unit3Class">
+            <option value="P">P</option>
+            <option value="F">F</option>
+          </select>
+        </td>
+        <td><input type="number" id="unit3Final" min="0" max="20"></td>
+        <td id="unit3Result">-</td>
+      </tr>
+      <tr>
+        <td>Unit 4</td>
+        <td>
+          <select id="unit4Class">
+            <option value="P">P</option>
+            <option value="F">F</option>
+          </select>
+        </td>
+        <td><input type="number" id="unit4Final" min="0" max="20"></td>
+        <td id="unit4Result">-</td>
+      </tr>
+      <tr>
+        <td>Unit 5</td>
+        <td>
+          <select id="unit5Class">
+            <option value="P">P</option>
+            <option value="F">F</option>
+          </select>
+        </td>
+        <td><input type="number" id="unit5Final" min="0" max="20"></td>
+        <td id="unit5Result">-</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="3" style="font-weight: bold;">Final Exam Grade:</td>
+        <td id="finalExamGrade">-</td>
+      </tr>
+    </tfoot>
+  </table>
 
-    <button type="button" onclick="calculateGrade()">Calculate Grade</button>
-  </form>
-
+  <button class="btn" onclick="calculateGrade()">Calculate Grade</button>
   <div id="result" class="result"></div>
 
   <script>
     function calculateGrade() {
-      // Retrieve class performance and final scores
+      // Get data from each row
       const unitsClass = [
         document.getElementById('unit1Class').value,
         document.getElementById('unit2Class').value,
@@ -117,5 +135,26 @@
         parseFloat(document.getElementById('unit5Final').value) || 0,
       ];
 
-      // Calculate total units passed during class and raw final exam score
-      const unitsPassed = unitsClass.filter(stat
+      // Calculate total units passed
+      let totalUnitsPassed = 0;
+      unitsClass.forEach((performance, index) => {
+        const finalScore = unitsFinal[index];
+        const resultCell = document.getElementById(`unit${index + 1}Result`);
+        if (performance === 'P' && finalScore >= 16) {
+          totalUnitsPassed++;
+          resultCell.textContent = 'Pass';
+        } else {
+          resultCell.textContent = 'Fail';
+        }
+      });
+
+      // Calculate final exam grade
+      const finalExamGrade = unitsFinal.reduce((sum, score) => sum + score, 0);
+      document.getElementById('finalExamGrade').textContent = finalExamGrade;
+
+      // Display result summary
+      document.getElementById('result').textContent = `Total Units Passed: ${totalUnitsPassed}, Final Exam Grade: ${finalExamGrade}`;
+    }
+  </script>
+</body>
+</html>
