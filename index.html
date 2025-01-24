@@ -53,9 +53,9 @@
     <thead>
       <tr>
         <th>Unit</th>
-        <th>In-Class Performance (P/F)</th>
+        <th>In-Class Performance (P/I)</th>
         <th>Final Exam Score (0-20)</th>
-        <th>Total Units Passed</th>
+        <th>Final Unit Grade</th>
       </tr>
     </thead>
     <tbody>
@@ -64,7 +64,7 @@
         <td>
           <select id="unit1Class" onchange="updateResults()">
             <option value="P">P</option>
-            <option value="F">F</option>
+            <option value="I">I</option>
           </select>
         </td>
         <td><input type="number" id="unit1Final" min="0" max="20" oninput="updateResults()"></td>
@@ -75,7 +75,7 @@
         <td>
           <select id="unit2Class" onchange="updateResults()">
             <option value="P">P</option>
-            <option value="F">F</option>
+            <option value="I">I</option>
           </select>
         </td>
         <td><input type="number" id="unit2Final" min="0" max="20" oninput="updateResults()"></td>
@@ -86,7 +86,7 @@
         <td>
           <select id="unit3Class" onchange="updateResults()">
             <option value="P">P</option>
-            <option value="F">F</option>
+            <option value="I">I</option>
           </select>
         </td>
         <td><input type="number" id="unit3Final" min="0" max="20" oninput="updateResults()"></td>
@@ -97,7 +97,7 @@
         <td>
           <select id="unit4Class" onchange="updateResults()">
             <option value="P">P</option>
-            <option value="F">F</option>
+            <option value="I">I</option>
           </select>
         </td>
         <td><input type="number" id="unit4Final" min="0" max="20" oninput="updateResults()"></td>
@@ -108,7 +108,7 @@
         <td>
           <select id="unit5Class" onchange="updateResults()">
             <option value="P">P</option>
-            <option value="F">F</option>
+            <option value="I">I</option>
           </select>
         </td>
         <td><input type="number" id="unit5Final" min="0" max="20" oninput="updateResults()"></td>
@@ -151,11 +151,11 @@
       unitsClass.forEach((performance, index) => {
         const finalScore = unitsFinal[index];
         const resultCell = document.getElementById(`unit${index + 1}Result`);
-        if (performance === 'P' && finalScore >= 16) {
+        if (performance === 'P' || finalScore >= 15) {
           totalUnitsPassed++;
-          resultCell.textContent = 'Pass';
+          resultCell.textContent = 'P';
         } else {
-          resultCell.textContent = 'Fail';
+          resultCell.textContent = 'F';
         }
       });
 
